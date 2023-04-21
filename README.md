@@ -1,0 +1,1 @@
+# fast-web-minimal-django
