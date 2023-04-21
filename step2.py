@@ -1,4 +1,4 @@
-# tinyapp.py
+# step2.py
 
 from django.urls import re_path
 from django.shortcuts import redirect, render as django_render
@@ -16,21 +16,9 @@ TEMPLATES = [
 ]
 
 
-# wrapper renders django template
-def render(template_name):
-    def decorator(func):
-        def wrapper(request, *args, **kwargs):
-            context = func(request, *args, **kwargs)
-            return django_render(request, template_name, context)
-        return wrapper
-    return decorator
-
-
-@render(template_name='about.html')
 def about(request):
     title = 'Tinyapp'
-    author = 'John Mitchell'
-    return locals()
+    return django_render(request, 'about.html', locals())
 
 
 def home(request):

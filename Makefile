@@ -10,8 +10,8 @@ check:
 	venv/bin/django-admin check --pythonpath=. --settings=tinyapp
 
 list:
-	git ls-files '*.html' '*.py' | wc -l
-	wc -l $$(git ls-files '*.html' '*.py') | tail -n 1
+	git ls-files '*.html' '*.py' | grep -v step | wc -l
+	wc -l $$(git ls-files '*.html' '*.py' | grep -v step) | tail -n 1
 
 # PYTHON LAYER ::::::::::::::::::::
 

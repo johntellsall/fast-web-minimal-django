@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title }}</title>
+</head>
+<body>
+  <h1>About {{ title }}</h1>
+  <p>This Website was developed by {{ author | default:"MISSING"}}.</p>
+  <p>Now using the Django's Template Engine.</p>
+  <p><a href="{% url 'homepage' %}">Return to the homepage</a>.</p>
+</body>
+</html>

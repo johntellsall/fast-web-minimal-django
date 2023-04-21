@@ -64,7 +64,69 @@ Let's add a feature: render page using a template.
 
 An HTML page hardcoded on the server is awkward to edit, track, and manage. Put the page in a separate file, and let its details be set in code.
 
+Let's also experiment with Django by creating another page, and having the main home page redirect to it.
+
+### update Tinyapp to use Jinja Template
+
+Replace the tinyapp.py file with this code:
+
+
+    from django.urls import re_path
+    from django.shortcuts import redirect, render as django_render
+
+    DEBUG = True
+    SECRET_KEY = '1234'
+    ROOT_URLCONF = __name__
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [
+                'templates/'
+            ],
+        },
+    ]
+
+
+    def about(request):
+        title = 'Tinyapp'
+        author = 'John Mitchell'
+        return django_render(request, 'about.html', locals())
+
+
+    def home(request):
+        return redirect('aboutpage')
+
+
+    urlpatterns = [
+        re_path(r'^$', home, name='homepage'),
+        re_path(r'^about/$', about, name='aboutpage'),
+    ]
+
+### Create the Template
+
+Make the "templates" directory and put a HTML template inside:
+
+    mkdir templates
+
+templates/about.html
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>{{ title }}</title>
+    </head>
+    <body>
+    <h1>About {{ title }}</h1>
+    <p>This Website was developed by {{ author | default:"MISSING"}}.</p>
+    <p>Now using the Django's Template Engine.</p>
+    <p><a href="{% url 'homepage' %}">Return to the homepage</a>.</p>
+    </body>
+    </html>
+
 XX template
+
+## Next XX
+
 XX template use locals
 
 ## Thanks
