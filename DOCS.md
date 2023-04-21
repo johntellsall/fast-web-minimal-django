@@ -48,7 +48,7 @@ Copy this code into "tinyapp.py":
 
 Run the Django appserver:
 
-    django-admin runserver --pythonpath=. --settings=step1
+    django-admin runserver --pythonpath=. --settings=tinyapp
 
 ### Verify App
 
@@ -58,7 +58,11 @@ XX screenshot
 
 You're done! A fully working minimal Django app in *ten* lines of code. The traditional settings.py file from the standard boilerplate is easily quadruple that.
 
-Let's add a few features:
+Let's add a feature: render page using a template.
+
+## Minimal Django with Template
+
+An HTML page hardcoded on the server is awkward to edit, track, and manage. Put the page in a separate file, and let its details be set in code.
 
 XX template
 XX template use locals
