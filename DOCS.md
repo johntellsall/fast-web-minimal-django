@@ -89,7 +89,7 @@ Replace the tinyapp.py file with this code:
 
     def about(request):
         title = 'Tinyapp'
-        author = 'John Mitchell'
+        # NOTE: `author` not specified yet
         return django_render(request, 'about.html', locals())
 
 
@@ -108,7 +108,7 @@ Make the "templates" directory and put a HTML template inside:
 
     mkdir templates
 
-templates/about.html
+templates/about.html:
 
     <!DOCTYPE html>
     <html>
@@ -123,18 +123,66 @@ templates/about.html
     </body>
     </html>
 
-XX template
+### Verify Template Works
 
-## Next XX
+    django-admin runserver --pythonpath=. --settings=tinyapp
 
-XX template use locals
+Open the app in a browser: http://localhost:8000/
 
-## Thanks
+XX screenshot
 
-XX Vitor
-XX Real Python person
+It works!
+
+Note:
+- the `home()` page correctly redirected to the About page -- the URL in the browser was changed to `http://localhost:8000/about/`
+- since our `about()` page didn't specify all the values -- the `author` was missing -- the template renders as "was developed by MISSING" -- which is correct. Our template functions work!
+
+The Python code is a little rough. Can we improve it? Each page function can calculate values, then just return them. The page template ID doesn't change much, so we can hardcode that in a function wrapper.
+
+
+## Minimal Django with Template and Simpler View Functions
+
+Add this to the tinyapp.py:
+
+  # wrapper renders django template
+  def render(template_name):
+      def decorator(func):
+          def wrapper(request, *args, **kwargs):
+              context = func(request, *args, **kwargs)
+              return django_render(request, template_name, context)
+          return wrapper
+      return decorator
+
+Lets test this "render as template" wrapper, and specify an `author` value this time. Replace the `about` function with this code:
+
+  @render(template_name='about.html')
+  def about(request):
+      title = 'Tinyapp'
+      author = 'John Mitchell'
+      return locals()
+
+
+### Verify Template Works
+
+    django-admin runserver --pythonpath=. --settings=tinyapp
+
+Open the app in a browser: http://localhost:8000/
+
+It works!
+
+## Conclusion
+
+We've built a tiny app in Django and added several features, all in < 60 lines of code! We've used a number of Django features used in real apps: templates, redirection, custom filters, and server-side simplification.
+
 
 ## Future Directions
 
-XX Todo quite useful
+* the Todo app noted below is very useful for real-world Django projects. It uses a database, and shows off Django-specific features missing from "tinyapp".
+* check the GitHub repos for extra goodies. The Makefile has a lot of real-world Developer workflow things, like using the Ruff linter for fast code-level feedback. The repos also contains a Dockerfile for publishing your app in Docker as a container, or AWS App Runner for hosting on the internet.
+  
+## Thanks
+
+* Vitor Freitas, for [A Minimal Django Application](https://simpleisbetterthancomplex.com/article/2017/08/07/a-minimal-django-application.html), which this Tinyapp is heavily based. Go read this article, it's very clear and direct.
+
+* Charles de Villiers, for writing [Manage Your To-Do Lists Using Python and Django](https://realpython.com/django-todo-lists/)  Any real-world app will use most of the ideas from this project.
 
