@@ -1,10 +1,8 @@
 So the other day I wanted to make a small web app. Django is a great framework for this, as it automatically includes a ton of stuff I know I'll need. A database, templates, routing, all the "batteries included" features I like. 
 
-I found a [blog post](https://realpython.com/django-todo-lists/) that shows how to do a "Todo" app in full Django style. I copied the code, and at the end my app worked! Unfortunately, it was a bit confusing. The code had many files, 640 lines of code, and several nearly-identical directories. I was hoping to for a simpler base of code to work from.
+I found a [blog post](https://realpython.com/django-todo-lists/) that shows how to do a "Todo" app in full Django style. I copied the code, and at the end my app worked! Unfortunately, it was a bit confusing. The code had many files, 640 lines of code, and six nearly-identical directories. If a page template is put in the wrong spot, the app explodes. The structure was easy to get wrong, so I was spending energy on minutia vs getting my project done.
 
-XX ?? I want to spend my energy on adding features vs minutia.
-XX the traditional Todo app had multiple directories, so it created bugs XX when I put templates in the wrong directory.
-XX in the minimal app, we don't need six directories, just one directory per type: one for Python, one for HTML-Jinja templates.
+There's a simpler way to create an app.
 
 The "Todo" app from the article had too many moving parts, so I chose to do a minimal app next time. I found another [blog post, by Vitor Freitas](https://simpleisbetterthancomplex.com/article/2017/08/07/a-minimal-django-application.html).  This one was much better: only 56 lines of code! Despite not being as featureful, this minimal app has most of the features I want: templates, URL routing, and convenience features. At 10% of the complexity, I'm happy with this.
 
@@ -12,11 +10,11 @@ Let me show you how to do it.
 
 ## Benefits of a Minimal Application
 
-I'm a fan of feedback loops -- I'm writing a book on the subject. In building my app, I want to have a tiny core of code that I know very well. Over time, I'll add a small feature, then integrate and publish the updated app. A fast quality feedback loop, where I trust everything, is XX really useful.
+I'm a fan of feedback loops -- I'm writing a book on the subject. In building my app, I want to have a tiny core of code that I know very well. Over time, I'll add a small feature, then integrate and publish the updated app. A fast quality feedback loop, where I trust everything, is really useful.
 
-XX 10x
+By having a strong base for the app, then add things in small iterations, we get a solid feedback loop. Any time something breaks, we find out about immediately and it's very easy to fix.
 
-The standard Todo App was okay, but had 10x the amount of code, and *22* files in *six* different directories. The most common issue I had was figuring out where to put files. If a template is in the wrong place, loading a page will make the app explode with a really ugly error. Not fun, and not conducive to a tight, fast feedback loop.
+The standard Todo App was okay, but had 10x the amount of code as the Minimal app, and *22* files in *six* different directories. If a template is in the wrong place, loading a page will make the app explode with a really ugly error. Not fun, and not conducive to a tight, fast feedback loop.
 
 The Minimal App only has *two* directories. It's incredibly easy to just add code and it works, vs having to manage fiddly details that don't contribute to my app.
 
@@ -34,7 +32,7 @@ Let's write a minimal Django app from scratch.
 
 ### Write One-File Django Project
 
-Copy this code into "tinyapp.py", in the top-level project directory.
+Copy this code into `tinyapp.py`, in the top-level project directory.
 
     from django.urls import re_path
     from django.http import HttpResponse
@@ -60,17 +58,26 @@ Run the Django appserver:
 
 Load the web page in a browser http://localhost:8000/
 
-XX screenshot
+![step1 screenshot](images/step1-crop.png)
 
-You're done! A fully working minimal Django app in *ten* lines of code. The traditional settings.py file from the standard boilerplate is easily quadruple that.
+We're done! A fully working minimal Django app in *ten* lines of code. The traditional settings.py file from the standard boilerplate is easily quadruple that.
 
-XX currently the page text is hardcoded in the Python code, so it's hard to edit.
+Currently the page text is hardcoded in the Python code, so it's hard to edit.
 
 Let's add a feature: render page using a template.
 
 ## Minimal Django with Template
 
 An HTML page hardcoded on the server is awkward to edit, track, and manage. Put the page in a separate file, and let its details be set in code.
+
+To build a tight, fast feedback loop, we want to make small changes and immediately see if they work. Since it's been a while since I built with Django, I wanted to verify my assumptions at multiple levels:
+
+* _server_ functions work: create a 2nd page, have the 1st one redirect to it. E.g. use the `redirect()` Django function
+* templates work: Django correctly found in the "templates" directory 
+* template _values_ are rendering correctly - `title` is given in the server and will show in the page
+* template _functions_ work - `author` is not given in the server, so "MISSING" will show on the page
+
+The following change tests multiple things at the same time. Based on the output, we can diagnose whatever's doing wrong, fix it, and move on.
 
 Let's also experiment with Django by creating another page, and having the main home page redirect to it.
 
@@ -116,10 +123,7 @@ Make the "templates" directory and put a HTML template inside:
 
     mkdir templates
 
-Within the templates directory, create a new file. This means we can edit the HTML without messing with the server Django code.
-
-XX Since it's been a while X using Django, I wanted to verify the template is actually rendering correctly. So I specify a default value in the page, but I don't give the "author" value in the code. This means
-XX
+Create the `about.html` page in the `templates` directory:
 
 templates/about.html:
 
@@ -136,13 +140,13 @@ templates/about.html:
     </body>
     </html>
 
-### Verify Template Works
+### Verify the Template Works
 
     django-admin runserver --pythonpath=. --settings=tinyapp
 
 Open the app in a browser: http://localhost:8000/
 
-XX screenshot
+![step1 screenshot](images/step2-crop.png)
 
 It works!
 
@@ -152,9 +156,9 @@ Note:
 
 The Python code is a little rough. Can we improve it? Each page function can calculate values, then just return them. The page template ID doesn't change much, so we can hardcode that in a function wrapper.
 
-XX aspect of the feedback loop -- missing author value
-
 ## Minimal Django with Template and Simpler View Functions
+
+In our real app we want to calculate some values, then use a pre-defined template to render them. Values are specified in code, and the wrapper template page will be set as a Python annotation.
 
 Add this to the tinyapp.py:
 
@@ -184,7 +188,7 @@ Open the app in a browser: http://localhost:8000/
 
 It works!
 
-XX screenshot
+![step1 screenshot](images/step3-crop.png)
 
 ## Conclusion
 
