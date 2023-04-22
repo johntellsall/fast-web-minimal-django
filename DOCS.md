@@ -223,3 +223,4 @@ We've built a tiny app in Django and added several features, all in < 60 lines o
 
 * Charles de Villiers, for writing [Manage Your To-Do Lists Using Python and Django](https://realpython.com/django-todo-lists/)  Any real-world app will use most of the ideas from this project.
 
+* Jake Acosta, for editing/sanity help :)
