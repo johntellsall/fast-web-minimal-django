@@ -26,33 +26,39 @@ Let's write a minimal Django app from scratch.
 
 ### Setup virtualenv
 
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
 ### Write One-File Django Project
 
 Copy this code into `tinyapp.py`, in the top-level project directory.
 
-    from django.urls import re_path
-    from django.http import HttpResponse
+```python
+from django.urls import re_path
+from django.http import HttpResponse
 
-    DEBUG = True
-    SECRET_KEY = '1234'
-    ROOT_URLCONF = __name__
+DEBUG = True
+SECRET_KEY = '1234'
+ROOT_URLCONF = __name__
 
-    def home(request):
-        return HttpResponse("WE LOVE BEER")
+def home(request):
+    return HttpResponse("WE LOVE BEER")
 
-    urlpatterns = [
-        re_path(r'^$', home, name='homepage'),
-    ]
+urlpatterns = [
+    re_path(r'^$', home, name='homepage'),
+]
+```
 
 ### Run App
 
 Run the Django appserver:
 
-    django-admin runserver --pythonpath=. --settings=tinyapp
+```bash
+django-admin runserver --pythonpath=. --settings=tinyapp
+```
 
 ### Verify App
 
@@ -85,7 +91,7 @@ Let's also experiment with Django by creating another page, and having the main 
 
 Replace the tinyapp.py file with this code:
 
-
+```python
     from django.urls import re_path
     from django.shortcuts import redirect, render as django_render
 
@@ -116,33 +122,40 @@ Replace the tinyapp.py file with this code:
         re_path(r'^$', home, name='homepage'),
         re_path(r'^about/$', about, name='aboutpage'),
     ]
+```
 
 ### Create the Template
 
 Make the "templates" directory and put a HTML template inside:
 
-    mkdir templates
+```bash
+mkdir templates
+```
 
 Create the `about.html` page in the `templates` directory:
 
 templates/about.html:
 
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <title>{{ title }}</title>
-    </head>
-    <body>
-    <h1>About {{ title }}</h1>
-    <p>This Website was developed by {{ author | default:"MISSING"}}.</p>
-    <p>Now using the Django's Template Engine.</p>
-    <p><a href="{% url 'homepage' %}">Return to the homepage</a>.</p>
-    </body>
-    </html>
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ title }}</title>
+</head>
+<body>
+<h1>About {{ title }}</h1>
+<p>This Website was developed by {{ author | default:"MISSING"}}.</p>
+<p>Now using the Django's Template Engine.</p>
+<p><a href="{% url 'homepage' %}">Return to the homepage</a>.</p>
+</body>
+</html>
+```
 
 ### Verify the Template Works
 
-    django-admin runserver --pythonpath=. --settings=tinyapp
+```bash
+django-admin runserver --pythonpath=. --settings=tinyapp
+```
 
 Open the app in a browser: http://localhost:8000/
 
@@ -162,14 +175,16 @@ In our real app we want to calculate some values, then use a pre-defined templat
 
 Add this to the tinyapp.py:
 
-    # wrapper renders django template
-    def render(template_name):
-        def decorator(func):
-            def wrapper(request, *args, **kwargs):
-                context = func(request, *args, **kwargs)
-                return django_render(request, template_name, context)
-            return wrapper
-        return decorator
+```python
+# wrapper renders django template
+def render(template_name):
+    def decorator(func):
+        def wrapper(request, *args, **kwargs):
+            context = func(request, *args, **kwargs)
+            return django_render(request, template_name, context)
+        return wrapper
+    return decorator
+```
 
 Lets test this "render as template" wrapper, and specify an `author` value this time. Replace the `about` function with this code:
 
