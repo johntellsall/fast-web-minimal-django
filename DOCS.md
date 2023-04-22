@@ -162,14 +162,14 @@ In our real app we want to calculate some values, then use a pre-defined templat
 
 Add this to the tinyapp.py:
 
-  # wrapper renders django template
-  def render(template_name):
-      def decorator(func):
-          def wrapper(request, *args, **kwargs):
-              context = func(request, *args, **kwargs)
-              return django_render(request, template_name, context)
-          return wrapper
-      return decorator
+    # wrapper renders django template
+    def render(template_name):
+        def decorator(func):
+            def wrapper(request, *args, **kwargs):
+                context = func(request, *args, **kwargs)
+                return django_render(request, template_name, context)
+            return wrapper
+        return decorator
 
 Lets test this "render as template" wrapper, and specify an `author` value this time. Replace the `about` function with this code:
 
