@@ -173,11 +173,13 @@ Add this to the tinyapp.py:
 
 Lets test this "render as template" wrapper, and specify an `author` value this time. Replace the `about` function with this code:
 
-  @render(template_name='about.html')
-  def about(request):
-      title = 'Tinyapp'
-      author = 'John Mitchell'
-      return locals()
+```python
+@render(template_name='about.html')
+def about(request):
+    title = 'Tinyapp'
+    author = 'John Mitchell'
+    return locals()
+```
 
 
 ### Verify Template Works
